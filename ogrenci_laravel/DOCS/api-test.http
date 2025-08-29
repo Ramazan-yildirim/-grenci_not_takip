@@ -1,0 +1,26 @@
+### Base
+@baseUrl = http://localhost:8000/api
+@json = application/json
+
+### Birimler alias (dersler index)
+# Basit arama: ?q=mal
+GET {{baseUrl}}/birimler?q=mal
+
+# Alias param: ?d="mali"  (tırnaklı değer desteklenir)
+GET {{baseUrl}}/birimler?d="mali"
+
+# Belirli eğitmen: ?egitmen_id=1
+GET {{baseUrl}}/birimler?egitmen_id=1
+
+# Sıralama ve sayfalama: ?sort=ad,-id&per_page=5
+GET {{baseUrl}}/birimler?sort=ad,-id&per_page=5
+
+### Ogrenciler filtre örnekleri
+# ?q="ayşe" (tırnaklı)
+GET {{baseUrl}}/ogrenciler?q="ayşe"
+
+# ?ad_soyad=Yılmaz
+GET {{baseUrl}}/ogrenciler?ad_soyad=Yılmaz
+
+# ?sort=ad_soyad,-id&per_page=10
+GET {{baseUrl}}/ogrenciler?sort=ad_soyad,-id&per_page=10
