@@ -2,7 +2,9 @@
   <q-page class="welcome-hero">
     <img :src="tux" alt="penguin placeholder" class="bg-placeholder" />
     <div class="welcome-overlay">
-      <div class="welcome-title">WELCOME LKD</div>
+      <div class="welcome-content column items-center q-gutter-md">
+        <div class="welcome-title">WELCOME LKD</div>
+      </div>
     </div>
   </q-page>
 </template>
