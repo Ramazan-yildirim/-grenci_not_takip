@@ -1,26 +1,122 @@
-### Base
+### Base settings
 @baseUrl = http://localhost:8000/api
 @json = application/json
 
-### Birimler alias (dersler index)
-# Basit arama: ?q=mal
-GET {{baseUrl}}/birimler?q=mal
+###
+# Öğrenciler (ogrenciler)
+###
+# Listele
+GET {{baseUrl}}/ogrenciler
 
-# Alias param: ?d="mali"  (tırnaklı değer desteklenir)
-GET {{baseUrl}}/birimler?d="mali"
+### Oluştur
+POST {{baseUrl}}/ogrenciler
+Content-Type: {{json}}
 
-# Belirli eğitmen: ?egitmen_id=1
-GET {{baseUrl}}/birimler?egitmen_id=1
+{
+  "ad_soyad": "Ayşe Yılmaz"
+}
 
-# Sıralama ve sayfalama: ?sort=ad,-id&per_page=5
-GET {{baseUrl}}/birimler?sort=ad,-id&per_page=5
+### Göster
+GET {{baseUrl}}/ogrenciler/1
 
-### Ogrenciler filtre örnekleri
-# ?q="ayşe" (tırnaklı)
-GET {{baseUrl}}/ogrenciler?q="ayşe"
+### Güncelle (PUT)
+PUT {{baseUrl}}/ogrenciler/1
+Content-Type: {{json}}
 
-# ?ad_soyad=Yılmaz
-GET {{baseUrl}}/ogrenciler?ad_soyad=Yılmaz
+{
+  "ad_soyad": "Ayşe Y."
+}
 
-# ?sort=ad_soyad,-id&per_page=10
-GET {{baseUrl}}/ogrenciler?sort=ad_soyad,-id&per_page=10
+### Sil
+DELETE {{baseUrl}}/ogrenciler/1
+
+
+###
+# Eğitmenler (egitmenler)
+###
+# Listele
+GET {{baseUrl}}/egitmenler
+
+### Oluştur
+POST {{baseUrl}}/egitmenler
+Content-Type: {{json}}
+
+{
+  "ad_soyad": "Ali Hoca"
+}
+
+### Göster
+GET {{baseUrl}}/egitmenler/1
+
+### Güncelle (PUT)
+PUT {{baseUrl}}/egitmenler/1
+Content-Type: {{json}}
+
+{
+  "ad_soyad": "Ali H."
+}
+
+### Sil
+DELETE {{baseUrl}}/egitmenler/1
+
+
+###
+# Dersler (dersler)
+###
+# Listele
+GET {{baseUrl}}/dersler
+
+### Oluştur (egitmen_id mevcut bir egitmen ID olmalı)
+POST {{baseUrl}}/dersler
+Content-Type: {{json}}
+
+{
+  "ad": "Matematik",
+  "egitmen_id": 1
+}
+
+### Göster
+GET {{baseUrl}}/dersler/1
+
+### Güncelle (PUT)
+PUT {{baseUrl}}/dersler/1
+Content-Type: {{json}}
+
+{
+  "ad": "Mat-1",
+  "egitmen_id": 1
+}
+
+### Sil
+DELETE {{baseUrl}}/dersler/1
+
+
+###
+# Notlar (notlar)
+###
+# Listele
+GET {{baseUrl}}/notlar
+
+### Oluştur (ogrenci_id ve ders_id mevcut olmalı)
+POST {{baseUrl}}/notlar
+Content-Type: {{json}}
+
+{
+  "ogrenci_id": 1,
+  "ders_id": 1,
+  "not": 85.5
+}
+
+### Göster
+GET {{baseUrl}}/notlar/1
+
+### Güncelle (PUT)
+PUT {{baseUrl}}/notlar/1
+Content-Type: {{json}}
+
+{
+  "not": 90.0
+}
+
+### Sil
+DELETE {{baseUrl}}/notlar/1

@@ -28,6 +28,3 @@ Route::apiResource('dersler', DersController::class)
 
 Route::apiResource('notlar', NotController::class)
     ->parameters(['notlar' => 'not']);
-
-// Alias: birimler -> dersler index (filtreleme için ?d="mali" vb. desteklenir)
-Route::get('birimler', [DersController::class, 'index'])->name('birimler.index');
