@@ -1,5 +1,6 @@
 <template>
-  <q-page class="q-pa-md">
+  <q-page class="q-pa-md welcome-hero">
+    <img :src="tux" alt="penguin placeholder" class="bg-placeholder" />
     <q-table
       flat
       bordered
@@ -105,6 +106,7 @@
 import { ref, onMounted } from 'vue'
 import { useQuasar } from 'quasar'
 import axios from 'axios'
+import tux from '../../Linux_mascot_tux.png'
 
 const $q = useQuasar()
 const api = axios.create({
@@ -267,3 +269,25 @@ function confirmDelete(ogrenci) {
 
 onMounted(fetchOgrenciler)
 </script>
+
+<style scoped>
+.welcome-hero {
+  position: relative;
+  min-height: 100vh;
+  background-color: #cacaca;
+}
+
+.bg-placeholder {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 380px;
+  max-width: 60vw;
+  height: auto;
+  opacity: 0.18;
+  filter: grayscale(100%);
+  pointer-events: none;
+  user-select: none;
+}
+</style>

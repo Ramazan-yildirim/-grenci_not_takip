@@ -1,5 +1,6 @@
 <template>
-  <q-page class="q-pa-md">
+  <q-page class="q-pa-md welcome-hero">
+    <img :src="tux" alt="penguin placeholder" class="bg-placeholder" />
     <q-table
       flat
       bordered
@@ -57,14 +58,7 @@
 
       <template v-slot:body-cell-actions="props">
         <q-td :props="props" class="q-gutter-sm">
-          <q-btn
-            icon="edit"
-            color="info"
-            flat
-            dense
-            round
-            @click="openEditDialog(props.row)"
-          />
+          <q-btn icon="edit" color="info" flat dense round @click="openEditDialog(props.row)" />
           <q-btn
             icon="delete"
             color="negative"
@@ -83,7 +77,7 @@
         </div>
       </template>
 
-       <template v-slot:loading>
+      <template v-slot:loading>
         <q-inner-loading showing color="primary" />
       </template>
     </q-table>
@@ -99,7 +93,7 @@
           <q-select
             v-model="form.ders_id"
             :options="dersler"
-            :option-label="opt => courseName(opt, true)"
+            :option-label="(opt) => courseName(opt, true)"
             option-value="id"
             emit-value
             map-options
@@ -107,12 +101,12 @@
             dense
             outlined
             :loading="optionsLoading"
-            :rules="[val => !!val || 'Ders seçimi zorunludur']"
+            :rules="[(val) => !!val || 'Ders seçimi zorunludur']"
           />
           <q-select
             v-model="form.ogrenci_id"
             :options="ogrenciler"
-            :option-label="opt => studentName(opt, true)"
+            :option-label="(opt) => studentName(opt, true)"
             option-value="id"
             emit-value
             map-options
@@ -120,7 +114,7 @@
             dense
             outlined
             :loading="optionsLoading"
-            :rules="[val => !!val || 'Öğrenci seçimi zorunludur']"
+            :rules="[(val) => !!val || 'Öğrenci seçimi zorunludur']"
           />
           <q-input
             v-model.number="form.deger"
@@ -129,8 +123,8 @@
             dense
             outlined
             :rules="[
-              val => val !== null && val !== '' || 'Not değeri zorunludur',
-              val => val >= 0 && val <= 100 || 'Not 0-100 arasında olmalıdır'
+              (val) => (val !== null && val !== '') || 'Not değeri zorunludur',
+              (val) => (val >= 0 && val <= 100) || 'Not 0-100 arasında olmalıdır',
             ]"
           />
         </q-card-section>
@@ -147,6 +141,7 @@
 import { ref, onMounted } from 'vue'
 import { useQuasar } from 'quasar'
 import axios from 'axios'
+import tux from '../../Linux_mascot_tux.png'
 
 const $q = useQuasar()
 const api = axios.create({
@@ -163,7 +158,7 @@ const optionsLoading = ref(false)
 const filter = ref('')
 const saving = ref(false)
 
-const getRowKey = (row) => row.id || row.uuid;
+const getRowKey = (row) => row.id || row.uuid
 
 const noteValue = (n) => {
   if (!n) return '—'
@@ -174,26 +169,41 @@ const noteValue = (n) => {
 
 const courseName = (n, isOption = false) => {
   if (!n) return ''
-  const d = isOption ? n : (n.ders || n.course || n.ders_bilgi || n.dersBilgi || {})
+  const d = isOption ? n : n.ders || n.course || n.ders_bilgi || n.dersBilgi || {}
   const ad = d.ad || d.adi || d.adı || d.name || d.title || n.ders_adi || n.dersAdi
   return ad || 'Ders Bilgisi Yok'
 }
 
 const studentName = (n, isOption = false) => {
   if (!n) return ''
-  const o = isOption ? n : (n.ogrenci || n.student || {})
+  const o = isOption ? n : n.ogrenci || n.student || {}
   const ad = o.ad || o.isim || o.adi || o.name || o.first_name
   const soyad = o.soyad || o.soyisim || o.soy_adi || o.surname || o.last_name
-  const birlesik = o.ad_soyad || o.adSoyad || o.isim_soyisim || o.isimSoyisim || o.full_name || o.fullName
+  const birlesik =
+    o.ad_soyad || o.adSoyad || o.isim_soyisim || o.isimSoyisim || o.full_name || o.fullName
   const ikili = `${ad || ''} ${soyad || ''}`.trim()
   return (ikili || birlesik || 'Öğrenci Bilgisi Yok').trim()
 }
 
 const columns = [
   { name: 'sira', label: 'Sıra', align: 'left', field: 'sira', sortable: false },
-  { name: 'ders', label: 'Ders', align: 'left', field: row => courseName(row), format: val => val, sortable: true },
-  { name: 'ogrenci', label: 'Öğrenci', align: 'left', field: row => studentName(row), format: val => val, sortable: true },
-  { name: 'deger', label: 'Not', align: 'center', field: row => noteValue(row), sortable: true },
+  {
+    name: 'ders',
+    label: 'Ders',
+    align: 'left',
+    field: (row) => courseName(row),
+    format: (val) => val,
+    sortable: true,
+  },
+  {
+    name: 'ogrenci',
+    label: 'Öğrenci',
+    align: 'left',
+    field: (row) => studentName(row),
+    format: (val) => val,
+    sortable: true,
+  },
+  { name: 'deger', label: 'Not', align: 'center', field: (row) => noteValue(row), sortable: true },
   { name: 'actions', label: 'İşlemler', align: 'right', field: 'actions' },
 ]
 
@@ -249,10 +259,7 @@ async function fetchNotlar() {
 async function fetchFormOptions() {
   optionsLoading.value = true
   try {
-    const [dersRes, ogrRes] = await Promise.all([
-      api.get('/dersler'),
-      api.get('/ogrenciler'),
-    ])
+    const [dersRes, ogrRes] = await Promise.all([api.get('/dersler'), api.get('/ogrenciler')])
     dersler.value = Array.isArray(dersRes.data) ? dersRes.data : (dersRes.data?.data ?? [])
     ogrenciler.value = Array.isArray(ogrRes.data) ? ogrRes.data : (ogrRes.data?.data ?? [])
   } catch (e) {
@@ -289,7 +296,12 @@ function openEditDialog(not) {
 }
 
 async function submitForm() {
-  const isFormValid = form.value.ders_id && form.value.ogrenci_id && form.value.deger !== null && form.value.deger >= 0 && form.value.deger <= 100
+  const isFormValid =
+    form.value.ders_id &&
+    form.value.ogrenci_id &&
+    form.value.deger !== null &&
+    form.value.deger >= 0 &&
+    form.value.deger <= 100
   if (!isFormValid) {
     $q.notify({ type: 'warning', message: 'Lütfen tüm alanları doğru bir şekilde doldurun.' })
     return
@@ -353,3 +365,25 @@ function confirmDelete(not) {
 
 onMounted(fetchNotlar)
 </script>
+
+<style scoped>
+.welcome-hero {
+  position: relative;
+  min-height: 100vh;
+  background-color: #cacaca;
+}
+
+.bg-placeholder {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 380px;
+  max-width: 60vw;
+  height: auto;
+  opacity: 0.18;
+  filter: grayscale(100%);
+  pointer-events: none;
+  user-select: none;
+}
+</style>

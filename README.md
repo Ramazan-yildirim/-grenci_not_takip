@@ -1,1 +1,1 @@
-# -grenci_not_takip
+# ogrenci_not_takip

@@ -1,5 +1,6 @@
 <template>
-  <q-page class="q-pa-md">
+  <q-page class="q-pa-md welcome-hero">
+    <img :src="tux" alt="penguin placeholder" class="bg-placeholder" />
     <q-table
       flat
       bordered
@@ -44,14 +45,7 @@
 
       <template v-slot:body-cell-actions="props">
         <q-td :props="props" class="q-gutter-sm">
-          <q-btn
-            icon="edit"
-            color="info"
-            flat
-            dense
-            round
-            @click="openEditDialog(props.row)"
-          />
+          <q-btn icon="edit" color="info" flat dense round @click="openEditDialog(props.row)" />
           <q-btn
             icon="delete"
             color="negative"
@@ -70,7 +64,7 @@
         </div>
       </template>
 
-       <template v-slot:loading>
+      <template v-slot:loading>
         <q-inner-loading showing color="primary" />
       </template>
     </q-table>
@@ -88,7 +82,7 @@
             label="Ad"
             dense
             outlined
-            :rules="[val => !!val || 'Ad alanı zorunludur']"
+            :rules="[(val) => !!val || 'Ad alanı zorunludur']"
             autofocus
           />
           <q-input
@@ -96,7 +90,7 @@
             label="Soyad"
             dense
             outlined
-            :rules="[val => !!val || 'Soyad alanı zorunludur']"
+            :rules="[(val) => !!val || 'Soyad alanı zorunludur']"
           />
         </q-card-section>
         <q-card-actions align="right">
@@ -112,6 +106,7 @@
 import { ref, onMounted } from 'vue'
 import { useQuasar } from 'quasar'
 import axios from 'axios'
+import tux from '../../Linux_mascot_tux.png'
 
 const $q = useQuasar()
 const api = axios.create({
@@ -125,20 +120,28 @@ const loading = ref(false)
 const filter = ref('')
 const saving = ref(false)
 
-const getRowKey = (row) => row.id || row.uuid;
+const getRowKey = (row) => row.id || row.uuid
 
 const fullName = (e) => {
   if (!e) return ''
   const ad = e.ad || e.isim || e.adi || e.name || e.first_name || ''
   const soyad = e.soyad || e.soyisim || e.soy_adi || e.surname || e.last_name || ''
-  const birlesik = e.ad_soyad || e.adSoyad || e.isim_soyisim || e.isimSoyisim || e.full_name || e.fullName || ''
+  const birlesik =
+    e.ad_soyad || e.adSoyad || e.isim_soyisim || e.isimSoyisim || e.full_name || e.fullName || ''
   const ikili = `${ad} ${soyad}`.trim()
   return (ikili || birlesik).trim() || 'İsimsiz Eğitmen'
 }
 
 const columns = [
   { name: 'sira', label: 'Sıra', align: 'left', field: 'sira', sortable: false },
-  { name: 'fullName', label: 'Ad Soyad', align: 'left', field: row => fullName(row), format: val => val, sortable: true },
+  {
+    name: 'fullName',
+    label: 'Ad Soyad',
+    align: 'left',
+    field: (row) => fullName(row),
+    format: (val) => val,
+    sortable: true,
+  },
   { name: 'actions', label: 'İşlemler', align: 'right', field: 'actions' },
 ]
 
@@ -193,7 +196,13 @@ function openAddDialog() {
 function openEditDialog(egitmen) {
   resetForm()
   const ad = egitmen.ad || egitmen.isim || egitmen.adi || egitmen.name || egitmen.first_name || ''
-  const soyad = egitmen.soyad || egitmen.soyisim || egitmen.soy_adi || egitmen.surname || egitmen.last_name || ''
+  const soyad =
+    egitmen.soyad ||
+    egitmen.soyisim ||
+    egitmen.soy_adi ||
+    egitmen.surname ||
+    egitmen.last_name ||
+    ''
   form.value = { ...egitmen, ad, soyad }
   dialog.value = { show: true, isEdit: true }
 }
@@ -260,3 +269,25 @@ function confirmDelete(egitmen) {
 
 onMounted(fetchEgitmenler)
 </script>
+
+<style scoped>
+.welcome-hero {
+  position: relative;
+  min-height: 100vh;
+  background-color: #cacaca;
+}
+
+.bg-placeholder {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 380px;
+  max-width: 60vw;
+  height: auto;
+  opacity: 0.18;
+  filter: grayscale(100%);
+  pointer-events: none;
+  user-select: none;
+}
+</style>

@@ -1,5 +1,6 @@
 <template>
-  <q-page class="q-pa-md">
+  <q-page class="q-pa-md welcome-hero">
+    <img :src="tux" alt="penguin placeholder" class="bg-placeholder" />
     <q-table
       flat
       bordered
@@ -44,14 +45,7 @@
 
       <template v-slot:body-cell-actions="props">
         <q-td :props="props" class="q-gutter-sm">
-          <q-btn
-            icon="edit"
-            color="info"
-            flat
-            dense
-            round
-            @click="openEditDialog(props.row)"
-          />
+          <q-btn icon="edit" color="info" flat dense round @click="openEditDialog(props.row)" />
           <q-btn
             icon="delete"
             color="negative"
@@ -70,7 +64,7 @@
         </div>
       </template>
 
-       <template v-slot:loading>
+      <template v-slot:loading>
         <q-inner-loading showing color="primary" />
       </template>
     </q-table>
@@ -88,7 +82,7 @@
             label="Ders Adı"
             dense
             outlined
-            :rules="[val => !!val || 'Ders adı zorunludur']"
+            :rules="[(val) => !!val || 'Ders adı zorunludur']"
             autofocus
           />
           <q-select
@@ -102,7 +96,7 @@
             dense
             outlined
             :loading="optionsLoading"
-            :rules="[val => !!val || 'Eğitmen seçimi zorunludur']"
+            :rules="[(val) => !!val || 'Eğitmen seçimi zorunludur']"
           />
         </q-card-section>
         <q-card-actions align="right">
@@ -118,6 +112,7 @@
 import { ref, onMounted } from 'vue'
 import { useQuasar } from 'quasar'
 import axios from 'axios'
+import tux from '../../Linux_mascot_tux.png'
 
 const $q = useQuasar()
 const api = axios.create({
@@ -133,7 +128,7 @@ const optionsLoading = ref(false)
 const filter = ref('')
 const saving = ref(false)
 
-const getRowKey = (row) => row.id || row.uuid;
+const getRowKey = (row) => row.id || row.uuid
 
 const courseName = (d) => {
   if (!d) return ''
@@ -146,15 +141,30 @@ const instructorName = (d) => {
   const e = d.egitmen || d.instructor || d.hoca || d
   const ad = e.ad || e.isim || e.adi || e.name || e.first_name
   const soyad = e.soyad || e.soyisim || e.soy_adi || e.surname || e.last_name
-  const birlesik = e.ad_soyad || e.adSoyad || e.isim_soyisim || e.isimSoyisim || e.full_name || e.fullName
+  const birlesik =
+    e.ad_soyad || e.adSoyad || e.isim_soyisim || e.isimSoyisim || e.full_name || e.fullName
   const ikili = `${ad || ''} ${soyad || ''}`.trim()
   return (ikili || birlesik || '—').trim()
 }
 
 const columns = [
   { name: 'sira', label: 'Sıra', align: 'left', field: 'sira', sortable: false },
-  { name: 'ad', label: 'Ders Adı', align: 'left', field: row => courseName(row), format: val => val, sortable: true },
-  { name: 'egitmen', label: 'Eğitmen', align: 'left', field: row => instructorName(row), format: val => val, sortable: true },
+  {
+    name: 'ad',
+    label: 'Ders Adı',
+    align: 'left',
+    field: (row) => courseName(row),
+    format: (val) => val,
+    sortable: true,
+  },
+  {
+    name: 'egitmen',
+    label: 'Eğitmen',
+    align: 'left',
+    field: (row) => instructorName(row),
+    format: (val) => val,
+    sortable: true,
+  },
   { name: 'actions', label: 'İşlemler', align: 'right', field: 'actions' },
 ]
 
@@ -226,7 +236,7 @@ function openEditDialog(ders) {
   form.value = {
     ...ders,
     ad: courseName(ders),
-    egitmen_id: ders.egitmen?.id || null
+    egitmen_id: ders.egitmen?.id || null,
   }
   dialog.value = { show: true, isEdit: true }
   if (egitmenler.value.length === 0) {
@@ -293,3 +303,25 @@ function confirmDelete(ders) {
 
 onMounted(fetchDersler)
 </script>
+
+<style scoped>
+.welcome-hero {
+  position: relative;
+  min-height: 100vh;
+  background-color: #cacaca;
+}
+
+.bg-placeholder {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 380px;
+  max-width: 60vw;
+  height: auto;
+  opacity: 0.18;
+  filter: grayscale(100%);
+  pointer-events: none;
+  user-select: none;
+}
+</style>
